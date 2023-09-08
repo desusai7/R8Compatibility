@@ -20,35 +20,41 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-#-keep com.fasterxml.jackson.annotation.JsonIgnore
-#-keep com.fasterxml.jackson.annotation.JsonProperty
-#-keep com.squareup.moshi.Json
-#-keepnames class com.fasterxml.jackson.** { *; }
-
-#-dontwarn com.fasterxml.jackson.annotation.JsonIgnore
-#-dontwarn com.fasterxml.jackson.annotation.JsonProperty
-#-dontwarn com.squareup.moshi.Json
-
-#-keep class com.fasterxml.jackson.annotation.JsonIgnore
-#-keepattributes com.fasterxml.jackson.annotation.JsonIgnore
-#-keep class com.fasterxml.jackson.annotation.JsonProperty
-#-keep class com.squareup.moshi.Json
-
-# need to analyze these warnings if they are needed or need to be removed
-# repository / reporter module.
--dontwarn com.fasterxml.jackson.annotation.JsonIgnore
--dontwarn com.fasterxml.jackson.annotation.JsonProperty
--dontwarn com.squareup.moshi.Json
-
-# reporter module
+# These rules should be kept as part of the reporter module, as the fields of Entities are getting removed
+# this deals with `There should be at least one field in @Entity`
 -keep class com.rudderstack.android.ruddermetricsreporterandroid.models.LabelEntity { *; }
 -keep class com.rudderstack.android.ruddermetricsreporterandroid.models.MetricEntity { *; }
 
-
-
-# core sdk
+# Required for the usage off TypeToken class in Utils.converToMap, Utils.convertToList
 -keep class com.google.gson.reflect.TypeToken { *; }
-#-keep class com.rudderstack.android.sdk.core.persistence.DefaultPersistence { *; }
-#-keep class com.rudderstack.android.sdk.core.persistence.DefaultPersistenceProvider { *; }
+-keep class * extends com.google.gson.reflect.TypeToken
 
+# Required for the serialization of SourceConfig once it is downloaded.
+-keep class com.google.gson.internal.LinkedTreeMap { *; }
+-keep class * implements java.io.Serializable { *; }
+
+# Required to ensure the DefaultPersistenceProviderFactory is not removed by Proguard and works as expected
+# even when the customer is not using encryption feature.
+-dontwarn net.sqlcipher.Cursor
+-dontwarn net.sqlcipher.database.SQLiteDatabase$CursorFactory
+-dontwarn net.sqlcipher.database.SQLiteDatabase
+-dontwarn net.sqlcipher.database.SQLiteOpenHelper
 -keep class com.rudderstack.android.sdk.core.persistence.DefaultPersistenceProviderFactory { *; }
+
+# Required for the usage of annotations across reporter and web modules
+-dontwarn com.fasterxml.jackson.annotation.JsonIgnore
+-dontwarn com.squareup.moshi.Json
+-dontwarn com.fasterxml.jackson.annotation.JsonProperty
+
+# because of an issue with the dependencies used by the instruementation tests as mentioned here
+#  androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+#  androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+# the errors didn't go even after adding the below rule, hence needed to remove the instrumentation tests for the time being.
+-dontwarn com.google.errorprone.annotations
+
+# Required for Amplitude Device Mode
+-keep class com.rudderstack.android.integrations.amplitude.AmplitudeDestinationConfig { *; }
+
+# Required for DMT
+-keep class com.rudderstack.android.sdk.core.TransformationResponse { *; }
+-keep class com.rudderstack.android.sdk.core.TransformationResponseDeserializer { *; }

@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+         maven {
+             url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+         }
+    }
+}
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
@@ -23,7 +33,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -48,13 +58,17 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation "androidx.work:work-runtime:2.7.1"
+//    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    implementation 'com.rudderstack.android.sdk:core:1.18.0'
+    implementation 'com.rudderstack.android.sdk:core:1.18.1-SNAPSHOT'
     // add the following line if you don't have Gson included already
     implementation 'com.google.code.gson:gson:2+'
+    implementation 'com.rudderstack.android.integration:amplitude:1.+'
+    implementation 'com.amplitude:android-sdk:2.25.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
 
-    compileOnly "net.zetetic:android-database-sqlcipher:4.5.4"
-    compileOnly "androidx.sqlite:sqlite:2.3.1"
+//    compileOnly "net.zetetic:android-database-sqlcipher:4.5.4"
+//    compileOnly "androidx.sqlite:sqlite:2.3.1"
 }
